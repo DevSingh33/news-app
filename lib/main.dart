@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import 'package:assignment_news_app/blocs/internet/internet_bloc_bloc.dart';
@@ -12,9 +15,9 @@ import 'package:assignment_news_app/view/home_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Directory directory = await getApplicationDocumentsDirectory();
+  Directory directory = await getApplicationDocumentsDirectory();
   await Hive.initFlutter();
-  // Hive.init(directory.path);
+  Hive.init(directory.path);
   Hive.registerAdapter<News>(NewsAdapter());
   await SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
