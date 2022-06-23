@@ -56,10 +56,19 @@ class NewsDetailCard extends StatelessWidget {
                 top: 250,
                 left: 30,
                 right: 30,
-                child: Text(
-                  news.description ?? 'description',
-                  style: Theme.of(context).textTheme.headline3,
-                  maxLines: 5,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      news.description ?? 'description',
+                      style: Theme.of(context).textTheme.headline3,
+                      maxLines: 5,
+                    ),
+                    Text(
+                      '- ${news.source}',
+                      style: Theme.of(context).textTheme.headline3,
+                    ),
+                  ],
                 ),
               ),
               Positioned(

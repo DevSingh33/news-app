@@ -5,6 +5,7 @@ import 'package:assignment_news_app/models/news_data_model.dart';
 class HiveService {
   static const String hiveBoxName = 'news_box';
   List<News> _newsList = [];
+  // late Box<List<News>> _newsList;
 
   void getDataFromHive() async {
     final box = await Hive.openBox<News>(hiveBoxName);
@@ -13,7 +14,6 @@ class HiveService {
 
   void addDataToHive(List<News> newsList) async {
     final box = await Hive.openBox<News>(hiveBoxName);
-
     for (var news in newsList) {
       await box.add(news);
     }

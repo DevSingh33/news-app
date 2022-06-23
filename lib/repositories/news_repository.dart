@@ -22,8 +22,6 @@ class NewsRepository {
       return articleList;
     } catch (e) {
       rethrow;
-      print(e);
-      return [];
     }
   }
 }

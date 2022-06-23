@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:bloc/bloc.dart';
 
@@ -12,24 +10,25 @@ part 'news_bloc_state.dart';
 
 class NewsBloc extends Bloc<NewsBlocEvent, NewsBlocState> {
   final NewsRepository _newsRepository;
-  NewsBloc(this._newsRepository) : super(NewsInitialState()) {
+
+  NewsBloc(
+    this._newsRepository,
+  ) : super(NewsInitialState()) {
     on<FetchNewsEvent>((event, emit) async {
       emit(NewsLoadingState());
       try {
-        final List<News> newsList = await _newsRepository.getNews();
         final hive = HiveService();
         final box = await Hive.openBox<News>(HiveService.hiveBoxName);
-        box.clear();
-        hive.addDataToHive(newsList);
-        print('${box.values}');
+        hive.getDataFromHive();
 
-        emit(NewsLoadedState(newsList: newsList));
-      } on SocketException {
-        emit(NewsErrorState(errorMessage: 'No Internet Connection'));
-      } on HttpException {
-        emit(NewsErrorState(errorMessage: "Couldn't find the article 😱"));
-      } on FormatException {
-        emit(NewsErrorState(errorMessage: "Bad response format 👎"));
+        if (box.isNotEmpty) {
+          emit(NewsLoadedState(newsList: box.values.toList()));
+        } else {
+          final List<News> newsList = await _newsRepository.getNews();
+          box.clear();
+          hive.addDataToHive(newsList);
+          emit(NewsLoadedState(newsList: newsList));
+        }
       } catch (e) {
         emit(NewsErrorState(errorMessage: e.toString()));
       }
