@@ -8,7 +8,7 @@ class NewsRepository {
     try {
       var dio = Dio();
       var response = await dio.get(
-        'https://newsapi.org/v2/top-headlines?country=us&apiKey=$ApiKey',
+        'https://newsapi.org/v2/top-headlines?country=in&apiKey=$ApiKey',
       );
       late final List<News> articleList;
       if (response.statusCode == 200 || response.statusCode == 201) {

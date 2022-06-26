@@ -67,41 +67,44 @@ class MyHomePage extends StatelessWidget {
           }
         },
         builder: (context, internetState) {
-          return BlocProvider(
-            create: (context) {
-              return NewsBloc(RepositoryProvider.of(context))
-                ..add(FetchNewsEvent());
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: BlocBuilder<NewsBloc, NewsBlocState>(
-                builder: (context, newsState) {
-                  if (newsState is NewsInitialState) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.yellowAccent,
-                      ),
-                    );
-                  }
-                  if (newsState is NewsLoadedState) {
-                    return ListView.builder(
-                      itemCount: newsState.newsList.length,
-                      itemBuilder: ((context, index) =>
-                          NewsCard(news: newsState.newsList[index])),
-                    );
-                  }
-                  if (newsState is NewsErrorState) {
-                    return Center(
-                      child: Text(newsState.errorMessage.toString()),
-                    );
-                  }
+          if (internetState is InternetGainedState) {
+            BlocProvider.of<NewsBloc>(context).add(FetchNewsFromRepoEvent());
+          }
+          if (internetState is InternetLostState ||
+              internetState is InternetInitialState) {
+            BlocProvider.of<NewsBloc>(context).add(FetchNewsFromMemoryEvent());
+          }
+
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: BlocBuilder<NewsBloc, NewsBlocState>(
+              builder: (context, newsState) {
+                // if (newsState is NewsInitialState) {
+                if (newsState is NewsLoadingState) {
                   return const Center(
                     child: CircularProgressIndicator(
-                      color: Colors.pink,
+                      color: Colors.yellowAccent,
                     ),
                   );
-                },
-              ),
+                }
+                if (newsState is NewsLoadedState) {
+                  return ListView.builder(
+                    itemCount: newsState.newsList.length,
+                    itemBuilder: ((context, index) =>
+                        NewsCard(news: newsState.newsList[index])),
+                  );
+                }
+                if (newsState is NewsErrorState) {
+                  return Center(
+                    child: Text(newsState.errorMessage.toString()),
+                  );
+                }
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.pink,
+                  ),
+                );
+              },
             ),
           );
         },

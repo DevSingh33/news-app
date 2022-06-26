@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:assignment_news_app/blocs/news/news_bloc_bloc.dart';
+import 'package:assignment_news_app/repositories/news_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +11,6 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import 'package:assignment_news_app/blocs/internet/internet_bloc_bloc.dart';
 import 'package:assignment_news_app/models/news_data_model.dart';
-import 'package:assignment_news_app/repositories/news_repository.dart';
 import 'package:assignment_news_app/view/home_screen.dart';
 
 void main() async {
@@ -63,8 +64,10 @@ class MyApp extends StatelessWidget {
             caption: TextStyle(color: Colors.white.withOpacity(0.7)),
           ),
         ),
-        home: RepositoryProvider(
-          create: (context) => NewsRepository(),
+        // home: const MyHomePage(),
+
+        home: BlocProvider<NewsBloc>(
+          create: (context) => NewsBloc(NewsRepository()),
           child: const MyHomePage(),
         ),
       ),
